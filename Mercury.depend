@@ -1,0 +1,62 @@
+# depslib dependency file v1.0
+1424177678 source:/home/fireeyes/Desktop/Mercury/main.cpp
+	"include/Game.hpp"
+	<GameStateStart.hpp>
+	<iostream>
+
+1424102111 /home/fireeyes/Desktop/Mercury/include/Game.hpp
+	<TextureManager.h>
+	<stack>
+	<SFML/Graphics.hpp>
+
+1424112024 source:/home/fireeyes/Desktop/Mercury/src/Game.cpp
+	"../include/Game.hpp"
+	"../include/GameState.hpp"
+	<iostream>
+
+1424040111 /home/fireeyes/Desktop/Mercury/include/GameState.hpp
+	"Game.hpp"
+
+1424101296 /home/fireeyes/Desktop/Mercury/include/TextureManager.h
+	<SFML/Graphics.hpp>
+	<string>
+	<map>
+
+1424101863 source:/home/fireeyes/Desktop/Mercury/src/TextureManager.cpp
+	"../include/TextureManager.h"
+	<iostream>
+
+1424180747 source:/home/fireeyes/Desktop/Mercury/src/GameStateMain.cpp
+	"GameStateMain.hpp"
+	<cmath>
+
+1424116751 /home/fireeyes/Desktop/Mercury/include/GameStateMain.hpp
+	<vector>
+	<GameState.hpp>
+	<Entity.hpp>
+	<Box2D/Box2D.h>
+
+1424110606 source:/home/fireeyes/Desktop/Mercury/src/GameStateStart.cpp
+	"GameStateStart.hpp"
+
+1424106463 /home/fireeyes/Desktop/Mercury/include/GameStateStart.hpp
+	<GameState.hpp>
+	<GameStateMain.hpp>
+	<SFML/Graphics.hpp>
+
+1424110464 source:/home/fireeyes/Desktop/Mercury/src/Player.cpp
+	"Player.hpp"
+
+1424109040 /home/fireeyes/Desktop/Mercury/include/Player.hpp
+	<SFML/Graphics.hpp>
+	<Game.hpp>
+
+1424117901 /home/fireeyes/Desktop/Mercury/include/Entity.hpp
+	<SFML/Graphics.hpp>
+	<Box2D/Box2D.h>
+	<Game.hpp>
+	<string>
+
+1424180652 source:/home/fireeyes/Desktop/Mercury/src/Entity.cpp
+	"Entity.hpp"
+
