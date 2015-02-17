@@ -1,5 +1,8 @@
 #include "GameStateMain.hpp"
 #include <cmath>
+#include <iostream>
+
+using namespace std;
 
 GameStateMain::GameStateMain(Game *game)
 {
@@ -26,7 +29,13 @@ void GameStateMain::draw(const float dt)
 {
 
     this->game->window.setView(gameView);
-
+    if(entities.size())
+    {
+        this->gameView.reset(sf::FloatRect((SCALE * entities[0].Body->GetPosition().x) - 800 / 2,
+                                           (SCALE * entities[0].Body->GetPosition().y) - 600 / 2,
+                                           800,
+                                           600));
+    }
     this->game->window.clear(sf::Color::Black);
     this->game->window.draw(this->game->background);
 
@@ -35,7 +44,7 @@ void GameStateMain::draw(const float dt)
         entities[i].draw();
     }
 
-    this->game->window.setView(playerView);
+
     //this->game->window.draw(this->player);
 }
 
@@ -51,7 +60,9 @@ void GameStateMain::handleInput()
         int MouseX = sf::Mouse::getPosition(this->game->window).x;
         int MouseY = sf::Mouse::getPosition(this->game->window).y;
 
-        entities.push_back(Entity(this->world, MouseX, MouseY, "ship", this->game));
+        sf::Vector2f worldPos = this->game->window.mapPixelToCoords(sf::Vector2i(MouseX, MouseY));
+
+        entities.push_back(Entity(this->world, worldPos.x, worldPos.y, "ship", this->game));
     }
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
@@ -59,7 +70,9 @@ void GameStateMain::handleInput()
         int MouseX = sf::Mouse::getPosition(this->game->window).x;
         int MouseY = sf::Mouse::getPosition(this->game->window).y;
 
-        entities.push_back(Entity(this->world, MouseX, MouseY, "box", this->game));
+        sf::Vector2f worldPos = this->game->window.mapPixelToCoords(sf::Vector2i(MouseX, MouseY));
+        cout<<worldPos.x<<' '<<worldPos.y<<endl;
+        entities.push_back(Entity(this->world, worldPos.x, worldPos.y, "box", this->game));
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
