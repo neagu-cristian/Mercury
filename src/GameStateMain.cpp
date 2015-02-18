@@ -31,26 +31,47 @@ void GameStateMain::draw(const float dt)
     this->game->window.setView(gameView);
     if(entities.size())
     {
-        this->gameView.reset(sf::FloatRect((SCALE * entities[0].Body->GetPosition().x) - 800 / 2,
-                                           (SCALE * entities[0].Body->GetPosition().y) - 600 / 2,
-                                           800,
-                                           600));
+        this->gameView.reset(sf::FloatRect((SCALE * entities[0].Body->GetPosition().x) - this->game->window.getSize().x / 2,
+                                           (SCALE * entities[0].Body->GetPosition().y) - this->game->window.getSize().y / 2,
+                                           this->game->window.getSize().x,
+                                           this->game->window.getSize().y));
+        //this->gameView.rotate(entities[0].Body->GetAngle()* (180)/b2_pi);
     }
     this->game->window.clear(sf::Color::Black);
-    this->game->window.draw(this->game->background);
+
 
     for(int i = 0; i < entities.size(); i++)
     {
         entities[i].draw();
     }
 
-
-    //this->game->window.draw(this->player);
+    if(entities.size())
+    {
+       this->playerView.reset(sf::FloatRect((SCALE * entities[0].Body->GetPosition().x / 10) - this->game->window.getSize().x / 2,
+                                           (SCALE * entities[0].Body->GetPosition().y / 10) - this->game->window.getSize().y / 2,
+                                           this->game->window.getSize().x,
+                                           this->game->window.getSize().y));
+        //this->gameView.rotate(entities[0].Body->GetAngle()* (180)/b2_pi);
+    }
+    this->game->window.setView(playerView);
+    this->game->window.draw(this->game->background);
+    this->game->window.setView(gameView);
 }
 
 void GameStateMain::update(const float dt)
 {
     world->Step(1/60.f, 8, 3);
+
+    for(int i = 1; i < entities.size(); i++)
+    {
+        b2Vec2 delta = entities[0].Body->GetPosition() - entities[i].Body->GetPosition();
+
+        delta.Normalize();
+        delta.x *= 1;
+        delta.y *= 1;
+
+        entities[i].Body->ApplyForceToCenter(delta, true);
+    }
 }
 
 void GameStateMain::handleInput()
@@ -133,6 +154,11 @@ void GameStateMain::handleInput()
             entities[0].Body->SetLinearDamping(0.1);
             entities[0].Body->SetAngularDamping(0.1);
         }
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+    {
+        this->game->window.close();
     }
 
     sf::Event event;

@@ -8,7 +8,7 @@ Game::Game()
 {
     this->loadTextures();
 
-    this->window.create(sf::VideoMode(800, 600), "Mercury");
+    this->window.create(sf::VideoMode(1366, 768), "Mercury");
     this->window.setFramerateLimit(60);
 
     this->background.setTexture(textureManager.getRef("background"));
