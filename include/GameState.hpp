@@ -2,6 +2,8 @@
 #define GAMESTATE_H
 
 #include "Game.hpp"
+#include <Entity.hpp>
+#include <vector>
 
 class GameState
 {

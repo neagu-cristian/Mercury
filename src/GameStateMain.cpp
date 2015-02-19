@@ -4,99 +4,55 @@
 
 using namespace std;
 
-GameStateMain::GameStateMain(Game *game)
+GameStateMain::GameStateMain(Game *game) : parallax(game->textureManager.getRef("background"))
 {
     b2Vec2 Gravity(0.f, 0.f);
-    this->world = new b2World(Gravity);
 
+    this->world = new b2World(Gravity);
     this->game =  game;
-    this->player.setTexture(this->game->textureManager.getRef("ship"));
-    sf::Vector2f origin = sf::Vector2f(this->game->textureManager.getRef("ship").getSize());
-    this->player.setOrigin(origin * 0.5f);
 
     sf::Vector2f pos = sf::Vector2f(this->game->window.getSize());
     this->gameView.setSize(pos);
     this->playerView.setSize(pos);
+
     pos *= 0.5f;
-    this->player.move(pos);
+
     this->gameView.setCenter(pos);
     this->playerView.setCenter(pos);
 
-    //this->world->
+    player = new Player(this, this->world);
+    this->entities.push_back(*(player->entity));
 }
 
 void GameStateMain::draw(const float dt)
 {
-
-    this->game->window.setView(gameView);
-    if(entities.size())
-    {
-        this->gameView.reset(sf::FloatRect((SCALE * entities[0].Body->GetPosition().x) - this->game->window.getSize().x / 2,
-                                           (SCALE * entities[0].Body->GetPosition().y) - this->game->window.getSize().y / 2,
-                                           this->game->window.getSize().x,
-                                           this->game->window.getSize().y));
-        //this->gameView.rotate(entities[0].Body->GetAngle()* (180)/b2_pi);
-    }
     this->game->window.clear(sf::Color::Black);
 
+    int x = (int)(SCALE * player->entity->Body->GetPosition().x);
+    int y = (int)(SCALE * player->entity->Body->GetPosition().y);
+
+    this->parallax.draw(x, y, &this->game->window);
+    this->game->window.setView(gameView);
+
+    this->gameView.reset(sf::FloatRect((SCALE * player->entity->Body->GetPosition().x) - this->game->window.getSize().x / 2,
+                                       (SCALE * player->entity->Body->GetPosition().y) - this->game->window.getSize().y / 2,
+                                           this->game->window.getSize().x,
+                                           this->game->window.getSize().y));
 
     for(int i = 0; i < entities.size(); i++)
     {
         entities[i].draw();
     }
 
-    if(entities.size())
-    {
-        int x = (int)(SCALE * entities[0].Body->GetPosition().x / 10) % (1024 + 512);
-        int y = (int)(SCALE * entities[0].Body->GetPosition().y / 10) % (1024 + 512);
-
-        this->playerView.reset(sf::FloatRect((float)x - this->game->window.getSize().x / 2,
-                                             (float)y - this->game->window.getSize().y / 2,
-                                           this->game->window.getSize().x,
-                                           this->game->window.getSize().y));
-        //this->gameView.rotate(entities[0].Body->GetAngle()* (180)/b2_pi);
-        cout<<x<<' '<<y<<endl;
-    }
-
-
-
-    this->game->window.setView(playerView);
-    this->game->window.draw(this->game->background);
-    this->game->background.move(0, 1024);
-    this->game->window.draw(this->game->background);
-    this->game->background.move(0, -1024);
-
-    this->game->window.setView(gameView);
 }
 
 void GameStateMain::update(const float dt)
 {
     world->Step(1/60.f, 8, 3);
-
-    for(int i = 1; i < entities.size(); i++)
-    {
-        b2Vec2 delta = entities[0].Body->GetPosition() - entities[i].Body->GetPosition();
-
-        delta.Normalize();
-        delta.x *= 1;
-        delta.y *= 1;
-
-        entities[i].Body->ApplyForceToCenter(delta, true);
-    }
 }
 
 void GameStateMain::handleInput()
 {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-    {
-        int MouseX = sf::Mouse::getPosition(this->game->window).x;
-        int MouseY = sf::Mouse::getPosition(this->game->window).y;
-
-        sf::Vector2f worldPos = this->game->window.mapPixelToCoords(sf::Vector2i(MouseX, MouseY));
-
-        entities.push_back(Entity(this->world, worldPos.x, worldPos.y, "ship", this->game));
-    }
-
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
     {
         int MouseX = sf::Mouse::getPosition(this->game->window).x;
@@ -109,62 +65,53 @@ void GameStateMain::handleInput()
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        float32 angle = entities[0].Body->GetAngle() - b2_pi / 2;
+
+        float32 angle = player->entity->Body->GetAngle() - b2_pi / 2;
 
         b2Vec2 v;
-        v.y = 20 * sin(angle);
+        v.y = 20 * sin(angle);  // To be replaced with actual values
         v.x = 20 * cos(angle);
 
-        entities[0].Body->ApplyForceToCenter(v, true);
+        player->entity->Body->ApplyForceToCenter(v, true);
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::V))
     {
-        float32 angle = entities[0].Body->GetAngle()- b2_pi / 2;
+        float32 angle = player->entity->Body->GetAngle()- b2_pi / 2;
 
         b2Vec2 v;
-        v.y = 2000 * sin(angle);
+        v.y = 2000 * sin(angle); // To be replaced with actual values
         v.x = 2000 * cos(angle);
 
-        entities[0].Body->ApplyForceToCenter(v, true);
+        player->entity->Body->ApplyForceToCenter(v, true);
 
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-    //b2Body b;
-        float32 angle = entities[0].Body->GetAngle() - b2_pi / 2;
+        float32 angle = player->entity->Body->GetAngle() - b2_pi / 2;
 
         b2Vec2 v;
-        v.y = 20 * -sin(angle);
+        v.y = 20 * -sin(angle); // To be replaced with actual values
         v.x = 20 * -cos(angle);
 
-        entities[0].Body->ApplyForceToCenter(v, true);
-
-    //    this->gameView.move(0, 10);
+        player->entity->Body->ApplyForceToCenter(v, true);
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        entities[0].Body->ApplyAngularImpulse(-0.05, true);
+        player->entity->Body->ApplyAngularImpulse(-0.05, true); // To be replaced with actual values
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        entities[0].Body->ApplyAngularImpulse(+0.05, true);
-
-        //b2Body b;
-        entities[0].Body->SetLinearDamping(0.1);
-        entities[0].Body->SetAngularDamping(0.1);
+        player->entity->Body->ApplyAngularImpulse(+0.05, true); // To be replaced with actual values
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        entities[0].Body->SetLinearDamping(10);
-        entities[0].Body->SetAngularDamping(10);
+        player->entity->Body->SetLinearDamping(10); // To be replaced with actual values
+        player->entity->Body->SetAngularDamping(10);
     }
     else
     {
-        if(entities.size())
-        {
-            entities[0].Body->SetLinearDamping(0.1);
-            entities[0].Body->SetAngularDamping(0.1);
-        }
+        player->entity->Body->SetLinearDamping(0.1); // To be replaced with actual values
+        player->entity->Body->SetAngularDamping(0.1); // or not?!
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -192,11 +139,11 @@ void GameStateMain::handleInput()
             }
             case sf::Event::MouseButtonPressed:
             {
-
+                // handle low-fi input
             }
             case sf::Event::KeyPressed:
             {
-
+                // handle low-fi input
             }
             default:
             {

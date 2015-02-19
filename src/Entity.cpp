@@ -4,7 +4,6 @@ Entity::Entity(b2World *World, int x, int y, string texture, Game *game)
 {
     this->game = game;
 
-
     b2BodyDef BodyDef;
     BodyDef.position = b2Vec2(x/SCALE, y/SCALE);
     BodyDef.type = b2_dynamicBody;

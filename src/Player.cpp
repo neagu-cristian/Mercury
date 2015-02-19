@@ -1,9 +1,10 @@
 #include "Player.hpp"
 
-Player::Player(Game* game)
+Player::Player(GameState* state, b2World *world)
 {
-    this->game = game;
-    this->position = sf::Vector2f(-300, -300);
+    this->state = state;
+
+    this->entity = new Entity(world, 0, 0, "ship", state->game);
 }
 
 Player::~Player()

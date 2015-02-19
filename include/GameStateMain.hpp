@@ -1,14 +1,18 @@
 #ifndef GAME_STATE_MAIN_H
 #define GAME_STATE_MAIN_H
 
+#include <Box2D/Box2D.h>
 #include <vector>
+
 #include <GameState.hpp>
 #include <Entity.hpp>
-#include <Box2D/Box2D.h>
+#include <Player.hpp>
+#include <Parallax.hpp>
 
 class GameStateMain : public GameState
 {
     public:
+        Parallax parallax;
         b2World* world;
         vector<Entity> entities;
 
@@ -25,7 +29,10 @@ class GameStateMain : public GameState
     private:
         sf::View gameView;
         sf::View playerView;
-        sf::Sprite player;
+
+        Player *player;
+
+
 };
 
 #endif // GAME_STATE_MAIN_H
