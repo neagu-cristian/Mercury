@@ -8,7 +8,7 @@ void TextureManager::loadTexture(const string& name, const string& file)
     {
         //cout << "Texture "<<file<<" not found!"<<endl;
     }
-
+    t.setSmooth(true);
     this->textures[name] = t;
 }
 

@@ -47,14 +47,25 @@ void GameStateMain::draw(const float dt)
 
     if(entities.size())
     {
-       this->playerView.reset(sf::FloatRect((SCALE * entities[0].Body->GetPosition().x / 10) - this->game->window.getSize().x / 2,
-                                           (SCALE * entities[0].Body->GetPosition().y / 10) - this->game->window.getSize().y / 2,
+        int x = (int)(SCALE * entities[0].Body->GetPosition().x / 10) % (1024 + 512);
+        int y = (int)(SCALE * entities[0].Body->GetPosition().y / 10) % (1024 + 512);
+
+        this->playerView.reset(sf::FloatRect((float)x - this->game->window.getSize().x / 2,
+                                             (float)y - this->game->window.getSize().y / 2,
                                            this->game->window.getSize().x,
                                            this->game->window.getSize().y));
         //this->gameView.rotate(entities[0].Body->GetAngle()* (180)/b2_pi);
+        cout<<x<<' '<<y<<endl;
     }
+
+
+
     this->game->window.setView(playerView);
     this->game->window.draw(this->game->background);
+    this->game->background.move(0, 1024);
+    this->game->window.draw(this->game->background);
+    this->game->background.move(0, -1024);
+
     this->game->window.setView(gameView);
 }
 

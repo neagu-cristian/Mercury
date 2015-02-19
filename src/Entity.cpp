@@ -48,6 +48,7 @@ Entity::Entity(b2World *World, int x, int y, string texture, Game *game)
     sprite.setTexture(this->game->textureManager.getRef(texture));
     sprite.setOrigin(this->game->textureManager.getRef(texture).getSize().x / 2.f,
                      this->game->textureManager.getRef(texture).getSize().y / 2.f);
+
 }
 
 void Entity::draw()
